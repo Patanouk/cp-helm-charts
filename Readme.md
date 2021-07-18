@@ -2,7 +2,7 @@
 
 The goal of this fork was to be able to port-forward the kafka cluster in the kubernetes cluster locally
 
-##Changes in the chart
+## Changes in the chart
 
 ```yaml
   # See values.yaml in charts/cp-kafka/values.yaml
@@ -18,8 +18,8 @@ See [kafka-port-forward-local.sh](./kafka-port-forward-local.sh) for a script do
 
 ## Additional documentations on Kafka listeners
 
-####Blog article explaining the kafka listeners
+#### Blog article explaining the kafka listeners
 https://www.confluent.io/blog/kafka-listeners-explained/
 
-####Github Issue detailing how to port-forward the kafka cluster in the cp-helm chart
+#### Github Issue detailing how to port-forward the kafka cluster in the cp-helm chart
 https://github.com/confluentinc/cp-helm-charts/issues/351
