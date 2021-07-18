@@ -3,7 +3,7 @@
 ## ------------------------------------------------------
 cp-zookeeper:
   enabled: true
-  servers: 3
+  servers: 2
   image: confluentinc/cp-zookeeper
   imageTag: 6.1.0
   ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
@@ -12,7 +12,7 @@ cp-zookeeper:
   #  - name: "regcred"
   heapOptions: "-Xms512M -Xmx512M"
   persistence:
-    enabled: true
+    enabled: false
     ## The size of the PersistentVolume to allocate to each Zookeeper Pod in the StatefulSet. For
     ## production servers this number should likely be much larger.
     ##
@@ -22,10 +22,13 @@ cp-zookeeper:
     ## Size for data log dir, which is a dedicated log device to be used, and helps avoid competition between logging and snaphots.
     dataLogDirSize: 10Gi
     # dataLogDirStorageClass: ""
-    
-  # TODO: find correct security context for user in this zk-image  
-  securityContext: 
+
+  # TODO: find correct security context for user in this zk-image
+  securityContext:
     runAsUser: 0
+  prometheus:
+    jmx:
+      enabled: false
 
   resources: {}
   ## If you do want to specify resources, uncomment the following lines, adjust them as necessary,
@@ -51,7 +54,7 @@ cp-kafka:
   #  - name: "regcred"
   heapOptions: "-Xms512M -Xmx512M"
   persistence:
-    enabled: true
+    enabled: false
     # storageClass: ""
     size: 5Gi
     disksPerBroker: 1
@@ -64,14 +67,24 @@ cp-kafka:
   #  requests:
   #   cpu: 100m
   #   memory: 128Mi
-  securityContext: 
+  securityContext:
     runAsUser: 0
+  prometheus:
+    jmx:
+      enabled: false
+
+  # See values.yaml in charts/cp-kafka/values.yaml
+  configurationOverrides:
+    "advertised.listeners": |-
+      KUBERNETESPORTFOWARD://localhost:$((29092 + ${KAFKA_BROKER_ID}))
+    "listener.security.protocol.map": |-
+      PLAINTEXT:PLAINTEXT,KUBERNETESPORTFOWARD:PLAINTEXT
 
 ## ------------------------------------------------------
 ## Schema Registry
 ## ------------------------------------------------------
 cp-schema-registry:
-  enabled: true
+  enabled: false
   image: confluentinc/cp-schema-registry
   imageTag: 6.1.0
   ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
@@ -93,7 +106,7 @@ cp-schema-registry:
 ## REST Proxy
 ## ------------------------------------------------------
 cp-kafka-rest:
-  enabled: true
+  enabled: false
   image: confluentinc/cp-kafka-rest
   imageTag: 6.1.0
   ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
@@ -115,7 +128,7 @@ cp-kafka-rest:
 ## Kafka Connect
 ## ------------------------------------------------------
 cp-kafka-connect:
-  enabled: true
+  enabled: false
   image: confluentinc/cp-kafka-connect
   imageTag: 6.1.0
   ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
@@ -137,7 +150,7 @@ cp-kafka-connect:
 ## KSQL Server
 ## ------------------------------------------------------
 cp-ksql-server:
-  enabled: true
+  enabled: false
   image: confluentinc/cp-ksqldb-server
   imageTag: 6.1.0
   ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
@@ -152,7 +165,7 @@ cp-ksql-server:
 ## Control Center
 ## ------------------------------------------------------
 cp-control-center:
-  enabled: true
+  enabled: false
   image: confluentinc/cp-enterprise-control-center
   imageTag: 6.1.0
   ## Optionally specify an array of imagePullSecrets. Secrets must be manually created in the namespace.
